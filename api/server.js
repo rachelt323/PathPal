@@ -1,12 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const allRoutes = require("./index.js");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const app = express();
 
 require("dotenv").config();
 
 // Middleware
 app.use(express.json()); // For parsing application/json
+app.use(cors({ credentials: true, origin: true }));
+app.use(cookieParser());
 app.use("/api", allRoutes);
 
 mongoose
