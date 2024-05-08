@@ -1,13 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const allRoutes = require("./index.js");
 const app = express();
 
 require("dotenv").config();
 
 // Middleware
 app.use(express.json()); // For parsing application/json
-
-// DB Config (Update your URI)
+app.use("/api", allRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI, {
