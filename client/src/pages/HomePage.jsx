@@ -1,7 +1,39 @@
-import * as React from "react";
-import { Grid, TextField, Button, Box } from "@mui/material";
-
+import React, { useRef, useState } from "react";
+import { Grid, TextField, Button, Box, Input } from "@mui/material";
+import Autocomplete from "react-google-autocomplete";
+import { usePlacesWidget } from "react-google-autocomplete";
+import { useNavigate } from "react-router-dom";
 export default function HomePage() {
+  const [thePlace, setPlace] = useState(null);
+  const navigate = useNavigate();
+
+  const inputRef = useRef(null);
+  const { ref: materialRef } = usePlacesWidget({
+    apiKey: process.env.REACT_APP_MAPS_KEY,
+    onPlaceSelected: (place) => setPlace(place),
+    inputAutocompleteValue: "country",
+  });
+  async function handleCreate() {
+    try {
+      const res = await fetch("http://localhost:3001/api/plan/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: "Trip to " + thePlace.formatted_address,
+          place: thePlace.formatted_address,
+          lat: thePlace.geometry.location.lat(),
+          lng: thePlace.geometry.location.lng(),
+        }),
+      });
+      const data = await res.json();
+      navigate(`/plan/${data._id}`);
+    } catch (error) {
+      console.error("Error creating plan:", error);
+    }
+  }
   return (
     <Box
       alignItems="center"
@@ -16,10 +48,19 @@ export default function HomePage() {
       </Box>
 
       <Box mb={4}>
-        <TextField id="outlined-basic" label="Destination" variant="outlined" />
+        <div style={{ width: "250px", marginTop: "20px" }}>
+          <TextField
+            fullWidth
+            color="secondary"
+            variant="outlined"
+            inputRef={materialRef}
+          />
+        </div>
       </Box>
 
-      <Button variant="contained">Begin</Button>
+      <Button onClick={handleCreate} variant="contained">
+        Begin
+      </Button>
     </Box>
   );
 }
