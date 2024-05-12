@@ -33,4 +33,9 @@ planRouter.get("/:id", async (req, res) => {
   }
 });
 
+planRouter.get("/", async (req, res) => {
+  var userPlans = await Plan.find({ owner: req.user.id });
+  res.status(200).json(userPlans);
+});
+
 module.exports = planRouter;
