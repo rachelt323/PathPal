@@ -9,7 +9,7 @@ export default function PlanCard({ userPlan }) {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate(`/path/${userPlan._id}`);
+    navigate(`/plan/${userPlan._id}`);
   }
   return (
     <Card sx={{ width: 300 }} onClick={handleClick}>
