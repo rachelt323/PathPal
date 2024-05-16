@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const allRoutes = require("./index.js");
 const cors = require("cors");
@@ -8,6 +9,8 @@ const app = express();
 require("dotenv").config();
 
 // Middleware
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json()); // For parsing application/json
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
