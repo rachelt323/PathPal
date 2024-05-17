@@ -26,6 +26,7 @@ export default function HomePage() {
           place: thePlace.formatted_address,
           lat: thePlace.geometry.location.lat(),
           lng: thePlace.geometry.location.lng(),
+          lists: [],
         }),
       });
       const data = await res.json();
