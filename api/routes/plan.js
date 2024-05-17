@@ -5,14 +5,15 @@ const planRouter = express.Router();
 
 planRouter.post("/create", async (req, res) => {
   try {
-    var newPlan = await Plan.create({
+    var newPlan = new Plan({
       owner: req.user.id,
       title: req.body.title,
       place: req.body.place,
       lat: req.body.lat,
       lng: req.body.lng,
+      lists: [],
     });
-
+    await newPlan.save();
     res.status(200).json(newPlan);
   } catch (error) {
     res.status(400);
