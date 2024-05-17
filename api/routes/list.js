@@ -17,6 +17,11 @@ ListRouter.get("/:id", async (req, res) => {
 
 ListRouter.post("/add", async (req, res) => {
   try {
+    await List.create({
+      name: "",
+      planCode: req.body.planCode,
+      places: [],
+    });
   } catch (error) {
     res.status(400).send(error);
   }
