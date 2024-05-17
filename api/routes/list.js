@@ -22,4 +22,16 @@ ListRouter.post("/add", async (req, res) => {
   }
 });
 
+ListRouter.put("/:id", async (req, res) => {
+  await List.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        name: req.body.name,
+      },
+    }
+  );
+  res.status(200).json({ message: "success" });
+});
+
 module.exports = ListRouter;
