@@ -10,32 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 
-export default function DisplayList({ code }) {
-  const [name, setName] = useState("");
-  const [info, setInfo] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const getPlacesInfo = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/api/list/${code}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      const result = await response.json();
-      setInfo(result);
-      setName(result.name);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+export default function DisplayList({ listItem }) {
+  const [name, setName] = useState(listItem.name);
 
   const handleEdit = async () => {
     try {
-      await fetch(`http://localhost:3001/api/list/${code}`, {
+      await fetch(`http://localhost:3001/api/list/${listItem._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -50,14 +30,6 @@ export default function DisplayList({ code }) {
     }
   };
 
-  useEffect(() => {
-    getPlacesInfo();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
       <FormControl>
@@ -66,10 +38,11 @@ export default function DisplayList({ code }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           onBlur={handleEdit}
+          placeholder="Add a title (e.g., Resturants)"
         />
       </FormControl>
       <Box>
-        {info.places?.map((plan) => (
+        {listItem.places?.map((plan) => (
           <Card sx={{ display: "flex" }}>
             <CardContent>
               <Typography>TEMP</Typography>

@@ -15,13 +15,28 @@ ListRouter.get("/:id", async (req, res) => {
   }
 });
 
+ListRouter.get("/all/:planCode", async (req, res) => {
+  try {
+    const allLists = await List.find({ planCode: req.params.planCode }).sort({
+      createdAt: 1,
+    });
+    if (!allLists.length) {
+      return res.status(404).json({ message: "Plan has no lists" });
+    }
+    res.status(200).json(allLists);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 ListRouter.post("/add", async (req, res) => {
   try {
-    await List.create({
+    var newList = await List.create({
       name: "",
       planCode: req.body.planCode,
       places: [],
     });
+    res.status(200).json(newList);
   } catch (error) {
     res.status(400).send(error);
   }
