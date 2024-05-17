@@ -1,34 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Grid, Box, Button, ListItem } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import DisplayList from "../components/DisplayList/DisplayList";
+import { getPlanInfo } from "../api/api";
 
 export default function Plan() {
   const [planInfo, setPlanInfo] = useState(null);
   const { planCode } = useParams();
-
-  const getPlanInfo = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/api/plan/${planCode}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch plan info");
-      }
-      const data = await response.json();
-      setPlanInfo(data);
-    } catch (error) {
-      console.log("Error fetching plan:", error);
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getPlanInfo();
+    getPlanInfo(planCode).then((data) => setPlanInfo(data));
   }, [planCode]);
 
   if (!planInfo) {
@@ -36,13 +18,28 @@ export default function Plan() {
   }
 
   return (
-    <Grid container>
-      <Grid item xs={4}>
-        <h1>{planInfo.title}</h1>
+    <div>
+      <Button
+        variant="contained"
+        onClick={() => {
+          navigate(`/plan/${planCode}/explore`);
+        }}
+      >
+        Explore Places
+      </Button>
+      <Grid container>
+        <Grid item xs={6}>
+          <Box>
+            <h1>{planInfo.title}</h1>
+            {planInfo.lists?.map((listItem) => (
+              <DisplayList code={listItem} key={listItem} />
+            ))}
+          </Box>
+        </Grid>
+        <Grid item xs={6}>
+          <h1>Map</h1>
+        </Grid>
       </Grid>
-      <Grid item xs={8}>
-        <h1>Map</h1>
-      </Grid>
-    </Grid>
+    </div>
   );
 }
