@@ -3,18 +3,39 @@ import { CssBaseline, Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { getPlacesInfo, getPlanInfo } from "../api/api.js";
 import Map from "../components/Map/Map";
-import List from "../components/List/List";
+import ExploreList from "../components/ExploreList/ExploreList";
 
 export default function ExplorePage() {
   const [coords, setCoords] = useState(null);
   const [type, setType] = useState("restaurants");
   const [places, setPlaces] = useState([]);
+  const [lists, setLists] = useState([]);
   const { planCode } = useParams();
+
+  const getList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/list/all/${planCode}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      setLists(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     getPlanInfo(planCode).then((data) =>
       setCoords({ lat: data.lat, lng: data.lng })
     );
+    getList();
   }, [planCode]);
 
   useEffect(() => {
@@ -34,7 +55,13 @@ export default function ExplorePage() {
       <CssBaseline />
       <Grid container>
         <Grid item xs={12} md={4}>
-          <List type={type} setType={setType} places={places} />
+          <ExploreList
+            plan={planCode}
+            type={type}
+            setType={setType}
+            places={places}
+            lists={lists}
+          />
         </Grid>
         <Grid item xs={12} md={8}>
           <Map />

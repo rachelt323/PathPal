@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import PlaceDetails from "../PlaceDetails/PlaceDetails";
 
-export default function List({ type, setType, places }) {
+export default function ExploreList({ plan, type, setType, places, lists }) {
   return (
     <div>
       <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -17,7 +17,7 @@ export default function List({ type, setType, places }) {
         </Select>
       </FormControl>
       {places?.map((place, i) => (
-        <PlaceDetails place={place} key={i} />
+        <PlaceDetails plan={plan} place={place} lists={lists} key={i} />
       ))}
     </div>
   );
