@@ -10,8 +10,36 @@ import {
   Typography,
 } from "@mui/material";
 
+const defaultImageUrl = "/static/images/temp-background.jpeg";
+
 export default function DisplayList({ listItem }) {
   const [name, setName] = useState(listItem.name);
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getPlaces = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/place/list/${listItem._id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      setPlaces(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getPlaces();
+  }, []);
 
   const handleEdit = async () => {
     try {
@@ -30,6 +58,10 @@ export default function DisplayList({ listItem }) {
     }
   };
 
+  if (loading) {
+    return <div>Loading..</div>;
+  }
+
   return (
     <div>
       <FormControl>
@@ -42,20 +74,16 @@ export default function DisplayList({ listItem }) {
         />
       </FormControl>
       <Box>
-        {listItem.places?.map((plan) => (
-          <Card sx={{ display: "flex" }}>
-            <CardContent>
-              <Typography>TEMP</Typography>
-              <Typography>
-                Akihabara is a buzzing shopping hub famed for its electronics
-                retailers, ranging from tiny stalls to vast department stores
-                like Yodobashi Multimedia Akiba.
-              </Typography>
+        {places?.map((place) => (
+          <Card sx={{ display: "flex" }} key={place._id}>
+            <CardContent xs={6}>
+              <Typography>{place.data.name}</Typography>
+              <Typography>{place.data.description}</Typography>
             </CardContent>
             <CardMedia
-              component="img"
-              sx={{ width: 300 }}
-              image="/static/images/temp-background.jpeg"
+              xs={6}
+              sx={{ width: 140 }}
+              image={place.data.photo?.images?.small?.url || defaultImageUrl}
             />
           </Card>
         ))}
