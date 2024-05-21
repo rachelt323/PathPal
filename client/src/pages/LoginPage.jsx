@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -13,11 +11,13 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../util/AuthContext";
 
 const defaultTheme = createTheme();
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { setLoggedIn } = useAuth();
   async function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,14 +35,16 @@ export default function LoginPage() {
       });
       if (response.ok) {
         const res = await response.json();
+        setLoggedIn(true);
         alert(res.message);
-        navigate("/");
       } else {
         const errorData = await response.json();
         alert(errorData.error); // Set error message in state
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      navigate("/");
     }
   }
 
