@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Box, Button, ListItem } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import DisplayList from "../components/DisplayList/DisplayList";
-import { getPlanInfo } from "../api/api";
+import { getPlanInfo } from "../util/api";
 
 export default function Plan() {
   const [planInfo, setPlanInfo] = useState(null);

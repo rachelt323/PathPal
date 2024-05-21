@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CssBaseline, Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { getPlacesInfo, getPlanInfo } from "../api/api.js";
+import { getPlacesInfo, getPlanInfo } from "../util/api.js";
 import Map from "../components/Map/Map";
 import ExploreList from "../components/ExploreList/ExploreList";
 
