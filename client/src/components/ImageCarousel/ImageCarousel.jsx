@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import PlanCard from "../PlanCard/PlanCard";
-import "./ImageCarousel.css";
 
 const useStyles = {
   carouselContainer: {
