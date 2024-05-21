@@ -1,11 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Box, Button } from "@mui/material";
-import PlanCard from "../components/PlanCard/PlanCard";
 import { useNavigate } from "react-router-dom";
-import Plan from "./Plan";
+import Header from "../components/Header/Header";
+import ImageCarousel from "../components/ImageCarousel/ImageCarousel";
+
+const useStyles = {
+  button: {
+    backgroundColor: "#4F6F52",
+    color: "#FFFFFF",
+    "&:hover": {
+      backgroundColor: "#1A4D2E",
+    },
+    marginBottom: "20px",
+  },
+  box: {
+    backgroundColor: "#F5EFE6",
+    padding: "20px",
+    borderRadius: "8px",
+    border: "1px solid #E8DFCA",
+  },
+  gridContainer: {
+    backgroundColor: "#F5EFE6",
+    padding: "20px",
+    borderRadius: "8px",
+    border: "1px solid #E8DFCA",
+  },
+  loading: {
+    color: "#1A4D2E",
+    fontSize: "20px",
+    textAlign: "center",
+  },
+};
 
 export default function MainPage() {
-  const [userPlans, setUserPlans] = useState();
+  const [userPlans, setUserPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const getUserInfo = async () => {
@@ -31,24 +59,21 @@ export default function MainPage() {
     getUserInfo();
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={useStyles.loading}>Loading...</div>;
   }
   return (
-    <Box>
-      <Button onClick={handleClick} variant="contained">
-        Plan new trip
-      </Button>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {userPlans.map((plan) => (
-          <Grid item key={plan._id}>
-            <PlanCard userPlan={plan} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    <>
+      <Header />
+      <Box style={useStyles.box}>
+        <Button
+          onClick={handleClick}
+          variant="contained"
+          style={useStyles.button}
+        >
+          Plan new trip
+        </Button>
+        <ImageCarousel userPlans={userPlans} />
+      </Box>
+    </>
   );
 }
