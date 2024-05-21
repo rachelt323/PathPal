@@ -5,24 +5,62 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 
-export default function PlanCard({ userPlan }) {
+const useCardStyles = {
+  card: {
+    flex: "1 0 auto",
+    margin: "10px",
+    backgroundColor: "#F5EFE6",
+    "&:hover": {
+      backgroundColor: "#E8DFCA",
+    },
+    cursor: "pointer",
+    border: "1px solid #1A4D2E",
+  },
+  media: {
+    height: 160,
+  },
+  title: {
+    color: "#1A4D2E",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+};
+
+export default function PlanCard({ userPlan, isMoving }) {
   const navigate = useNavigate();
 
-  function handleClick() {
+  function handleClick(e) {
+    if (isMoving) {
+      e.preventDefault();
+      return;
+    }
     navigate(`/plan/${userPlan._id}`);
   }
+
   return (
-    <Card sx={{ width: 300 }} onClick={handleClick}>
-      <CardMedia
-        sx={{ height: 160 }}
-        image="/static/images/temp-background.jpeg"
-        title="temp"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h7" component="div">
-          {userPlan.title}
-        </Typography>
-      </CardContent>
-    </Card>
+    <a
+      onClick={handleClick}
+      href={`/plan/${userPlan._id}`}
+      style={{ textDecoration: "none" }}
+    >
+      <Card sx={useCardStyles.card}>
+        <CardMedia
+          sx={useCardStyles.media}
+          image="/static/images/temp-background.jpeg"
+          title={userPlan.title}
+        />
+        <CardContent>
+          <Typography
+            gutterBottom
+            variant="h6"
+            component="div"
+            style={useCardStyles.title}
+          >
+            {userPlan.title}
+          </Typography>
+        </CardContent>
+      </Card>
+    </a>
   );
 }
