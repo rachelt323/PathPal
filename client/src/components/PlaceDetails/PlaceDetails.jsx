@@ -69,7 +69,7 @@ export default function PlaceDetails({ plan, place, lists }) {
 
   const deleteEntry = async (listId) => {
     try {
-      await fetch(
+      const deletePlaceRequest = fetch(
         `http://localhost:3001/api/place/${listId}/${place.location_id}`,
         {
           method: "DELETE",
@@ -79,6 +79,20 @@ export default function PlaceDetails({ plan, place, lists }) {
           credentials: "include",
         }
       );
+      const deleteFromListRequest = fetch(
+        `http://localhost:3001/api/list/${listId}/${place.location_id}/deletePlace`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+      const results = await Promise.all([
+        deletePlaceRequest,
+        deleteFromListRequest,
+      ]);
     } catch (error) {
       console.error(error);
     }
@@ -86,7 +100,7 @@ export default function PlaceDetails({ plan, place, lists }) {
 
   const addEntry = async (listId) => {
     try {
-      await fetch("http://localhost:3001/api/place/add", {
+      const addPlaceRequest = fetch("http://localhost:3001/api/place/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,6 +113,22 @@ export default function PlaceDetails({ plan, place, lists }) {
           data: place,
         }),
       });
+
+      const addToListRequest = fetch(
+        `http://localhost:3001/api/list/${listId}/addPlace`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            place: place,
+          }),
+        }
+      );
+
+      const results = await Promise.all([addPlaceRequest, addToListRequest]);
     } catch (error) {
       console.error(error);
     }
