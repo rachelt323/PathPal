@@ -40,7 +40,12 @@ const useStyles = {
   },
 };
 
-export default function DisplayList({ listItem }) {
+export default function DisplayList({
+  listItem,
+  listIndex,
+  allPlaces,
+  setAllPlaces,
+}) {
   const [name, setName] = useState(listItem.name);
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,6 +128,9 @@ export default function DisplayList({ listItem }) {
         values={places}
         onChange={({ oldIndex, newIndex }) => {
           const newPlaces = arrayMove(places, oldIndex, newIndex);
+          const newList = [...allPlaces];
+          newList[listIndex] = newPlaces;
+          setAllPlaces(newList);
           setPlaces(newPlaces);
           rearrangePlaces(newPlaces);
         }}
