@@ -1,5 +1,6 @@
 const express = require("express");
 const List = require("../models/List.js");
+const Place = require("../models/Place");
 
 const ListRouter = express.Router();
 
@@ -113,6 +114,23 @@ ListRouter.get("/:id/places", async (req, res) => {
     res.status(200).json(userList.places);
   } catch (error) {
     res.status(500).send(error);
+  }
+});
+
+ListRouter.delete("/:listId", async (req, res) => {
+  const { listId } = req.params;
+  try {
+    const list = await List.findById(listId);
+    if (!list) {
+      return res.status(404).json({ message: "List not found" });
+    }
+    await Place.deleteMany({ listId: listId });
+
+    await List.findByIdAndDelete(listId);
+
+    res.status(200).json({ message: "Success" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
