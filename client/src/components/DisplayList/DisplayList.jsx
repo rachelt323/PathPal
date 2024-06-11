@@ -9,46 +9,28 @@ import {
   CardMedia,
   Typography,
   Grid,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import "./styles.css";
 
 const defaultImageUrl = "/static/images/temp-background.jpeg";
-
-const useStyles = {
-  card: {
-    display: "flex",
-    height: "150px",
-    marginBottom: "20px",
-    backgroundColor: "#F5EFE6",
-    border: "1px solid #E8DFCA",
-  },
-  media: {
-    width: "100%",
-    height: "100%",
-    objectFir: "cover",
-  },
-  formControl: {
-    marginBottom: "20px",
-  },
-  textField: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: "8px",
-  },
-  box: {
-    backgroundColor: "#E8DFCA",
-    padding: "20px",
-    borderRadius: "8px",
-  },
-};
 
 export default function DisplayList({
   listItem,
   listIndex,
   allPlaces,
   setAllPlaces,
+  lists,
+  setLists,
 }) {
   const [name, setName] = useState(listItem.name);
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const getPlaces = async () => {
     try {
@@ -87,10 +69,6 @@ export default function DisplayList({
     }
   };
 
-  useEffect(() => {
-    getPlaces();
-  }, []);
-
   const handleEdit = async () => {
     try {
       await fetch(`http://localhost:3001/api/list/${listItem._id}`, {
@@ -108,22 +86,76 @@ export default function DisplayList({
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await fetch(`http://localhost:3001/api/list/${listItem._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const newPlaces = allPlaces.filter((item, idx) => idx !== listIndex);
+      setAllPlaces(newPlaces);
+      const newLists = lists.filter((item, idx) => idx !== listIndex);
+      setLists(newLists);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getPlaces();
+  }, []);
+
   if (loading) {
     return <div>Loading..</div>;
   }
 
+  const calculateWidth = () => {
+    const baseWidth = 301; // Minimum width in pixels
+    const scalingFactor = 11; // Increase in width per character
+    return Math.max(baseWidth, name.length * scalingFactor);
+  };
+
   return (
-    <Box style={useStyles.box}>
-      <FormControl fullWidth style={useStyles.formControl}>
-        <TextField
-          variant="filled"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          onBlur={handleEdit}
-          placeholder="Add a title (e.g., Restaurants)"
-          style={useStyles.textField}
-        />
-      </FormControl>
+    <Box className="box">
+      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+        <FormControl fullWidth className="formControl">
+          <TextField
+            style={{ width: calculateWidth() }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            variant="standard"
+            placeholder="Add a title (e.g., Restaurants)"
+            className="textField"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => {
+              handleEdit();
+              setIsFocused(false);
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            InputProps={{
+              disableUnderline: true,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EditIcon
+                    style={{
+                      visibility: isHovered || isFocused ? "visible" : "hidden",
+                    }}
+                  />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </FormControl>
+        <IconButton onClick={handleDelete}>
+          <DeleteIcon />
+        </IconButton>
+      </Box>
+
       <List
         values={places}
         onChange={({ oldIndex, newIndex }) => {
@@ -136,7 +168,7 @@ export default function DisplayList({
         }}
         renderList={({ children, props }) => <Box {...props}>{children}</Box>}
         renderItem={({ value, props }) => (
-          <Card {...props} sx={useStyles.card} key={value.location_id}>
+          <Card className="card" {...props} key={value.location_id}>
             <Grid container spacing={0}>
               <Grid item xs={8}>
                 <CardContent>
@@ -146,7 +178,7 @@ export default function DisplayList({
               </Grid>
               <Grid item xs={4}>
                 <CardMedia
-                  sx={useStyles.media}
+                  className="media"
                   image={value.photo?.images?.medium?.url || defaultImageUrl}
                   title={value.name}
                 />
