@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, Button, Typography } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import DisplayList from "../components/DisplayList/DisplayList";
-import { getPlanInfo } from "../util/api";
-import Header from "../components/Header/Header";
-import PlanMap from "../components/PlanMap/PlanMap";
+import { getPlanInfo } from "../../util/api";
+import DisplayList from "../../components/DisplayList/DisplayList";
+import Header from "../../components/Header/Header";
+import PlanMap from "../../components/PlanMap/PlanMap";
+import "./styles.css";
+import {
+  Grid,
+  Box,
+  Button,
+  Typography,
+  FormControl,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
 const useStyles = {
   container: {
@@ -37,6 +47,9 @@ export default function Plan() {
   const [selected, setSelected] = useState(null);
   const [places, setPlaces] = useState([]);
   const [lists, setLists] = useState([]);
+  const [title, setTitle] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const { planCode } = useParams();
   const navigate = useNavigate();
 
@@ -95,6 +108,29 @@ export default function Plan() {
     }
   };
 
+  const calculateWidth = () => {
+    const baseWidth = 301; // Minimum width in pixels
+    const scalingFactor = 11; // Increase in width per character
+    return Math.max(baseWidth, title.length * scalingFactor);
+  };
+
+  const handleEdit = async () => {
+    try {
+      await fetch(`http://localhost:3001/api/plan/${planCode}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title,
+        }),
+      });
+    } catch (error) {
+      console.error("Error updating name:", error);
+    }
+  };
+
   useEffect(() => {
     if (lists.length) {
       const fetchPlaces = async () => {
@@ -112,8 +148,8 @@ export default function Plan() {
   }, [lists]);
 
   useEffect(() => {
-    console.log(places);
-  }, [places]);
+    if (planInfo) setTitle(planInfo.title);
+  }, [planInfo]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -145,9 +181,35 @@ export default function Plan() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Box style={useStyles.listContainer}>
-              <Typography variant="h4" gutterBottom>
-                {planInfo.title}
-              </Typography>
+              <FormControl fullWidth className="titleFormControl">
+                <TextField
+                  style={{ width: calculateWidth() }}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  variant="standard"
+                  className="titleTextField"
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => {
+                    handleEdit();
+                    setIsFocused(false);
+                  }}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                  InputProps={{
+                    disableUnderline: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <EditIcon
+                          style={{
+                            visibility:
+                              isHovered || isFocused ? "visible" : "hidden",
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormControl>
 
               {lists?.map((listItem, listIndex) => (
                 <DisplayList
@@ -156,6 +218,8 @@ export default function Plan() {
                   listIndex={listIndex}
                   allPlaces={places}
                   setAllPlaces={setPlaces}
+                  lists={lists}
+                  setLists={setLists}
                 />
               ))}
 

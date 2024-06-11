@@ -39,4 +39,16 @@ planRouter.get("/", async (req, res) => {
   res.status(200).json(userPlans);
 });
 
+planRouter.put("/:id", async (req, res) => {
+  await Plan.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        title: req.body.title,
+      },
+    }
+  );
+  res.status(200).json({ message: "success" });
+});
+
 module.exports = planRouter;

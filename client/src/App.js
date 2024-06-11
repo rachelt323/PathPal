@@ -3,7 +3,7 @@ import MainPage from "./pages/MainPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import CreatePage from "./pages/CreatePage";
-import Plan from "./pages/Plan";
+import Plan from "./pages/PlanPage/Plan.jsx";
 import ExplorePage from "./pages/ExplorePage";
 import { AuthProvider } from "./util/AuthContext";
 

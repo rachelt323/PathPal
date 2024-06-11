@@ -1,0 +1,27 @@
+.titleFormControl {
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.titleTextField {
+  background-color: #e8dfca;
+  width: auto;
+  max-width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0 10px;
+}
+
+.titleTextField input {
+  font-weight: 800;
+  color: #000;
+  font-size: 1.5rem;
+}
+
+.titleTextField.Mui-focused {
+  background-color: #ccc; /* Highlight effect on focus */
+}
+
+.titleTextField:hover {
+  background-color: #9e9694; /* Change background on hover */
+}
