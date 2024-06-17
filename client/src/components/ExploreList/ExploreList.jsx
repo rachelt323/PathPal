@@ -16,9 +16,12 @@ export default function ExploreList({ plan, type, setType, places, lists }) {
           <MenuItem value={"hotels"}>Hotels</MenuItem>
         </Select>
       </FormControl>
-      {places?.map((place, i) => (
-        <PlaceDetails plan={plan} place={place} lists={lists} key={i} />
-      ))}
+      {places?.map((place, i) => {
+        if (place["name"])
+          return (
+            <PlaceDetails plan={plan} place={place} lists={lists} key={i} />
+          );
+      })}
     </div>
   );
 }
