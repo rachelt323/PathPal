@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./PlaceDetails.css";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -9,11 +10,11 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
 
-const defaultImageUrl = "/static/images/temp-background.jpeg"; // Provide a path to a default image
+const defaultImageUrl = "/static/images/temp-background.jpeg";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -53,15 +54,13 @@ export default function PlaceDetails({ plan, place, lists }) {
   }, [place]);
 
   const updateEntries = () => {
-    console.log(prev);
-    console.log(added);
     for (let i = 0; i < prev.length; i++) {
-      if (added.indexOf(prev[i]) == -1) {
+      if (added.indexOf(prev[i]) === -1) {
         deleteEntry(prev[i]);
       }
     }
     for (let i = 0; i < added.length; i++) {
-      if (prev.indexOf(added[i]) == -1) {
+      if (prev.indexOf(added[i]) === -1) {
         addEntry(added[i]);
       }
     }
@@ -69,29 +68,27 @@ export default function PlaceDetails({ plan, place, lists }) {
 
   const deleteEntry = async (listId) => {
     try {
-      const deletePlaceRequest = fetch(
-        `http://localhost:3001/api/place/${listId}/${place.location_id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      const deleteFromListRequest = fetch(
-        `http://localhost:3001/api/list/${listId}/${place.location_id}/deletePlace`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      const results = await Promise.all([
-        deletePlaceRequest,
-        deleteFromListRequest,
+      await Promise.all([
+        fetch(
+          `http://localhost:3001/api/place/${listId}/${place.location_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        ),
+        fetch(
+          `http://localhost:3001/api/list/${listId}/${place.location_id}/deletePlace`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        ),
       ]);
     } catch (error) {
       console.error(error);
@@ -100,23 +97,21 @@ export default function PlaceDetails({ plan, place, lists }) {
 
   const addEntry = async (listId) => {
     try {
-      const addPlaceRequest = fetch("http://localhost:3001/api/place/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          plan: plan,
-          location_id: place.location_id,
-          listId: listId,
-          data: place,
+      await Promise.all([
+        fetch("http://localhost:3001/api/place/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            plan: plan,
+            location_id: place.location_id,
+            listId: listId,
+            data: place,
+          }),
         }),
-      });
-
-      const addToListRequest = fetch(
-        `http://localhost:3001/api/list/${listId}/addPlace`,
-        {
+        fetch(`http://localhost:3001/api/list/${listId}/addPlace`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -125,33 +120,34 @@ export default function PlaceDetails({ plan, place, lists }) {
           body: JSON.stringify({
             place: place,
           }),
-        }
-      );
-
-      const results = await Promise.all([addPlaceRequest, addToListRequest]);
+        }),
+      ]);
     } catch (error) {
       console.error(error);
     }
   };
+
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setAdded(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setAdded(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card className="place-card">
       <CardMedia
-        sx={{ height: 140 }}
+        className="place-image"
         image={place?.photo?.images?.small?.url || defaultImageUrl}
-        title="green iguana"
+        title={place.name}
       />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+      <CardContent className="place-details">
+        <Typography
+          className="place-title"
+          gutterBottom
+          variant="h5"
+          component="div"
+        >
           {place.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -159,31 +155,25 @@ export default function PlaceDetails({ plan, place, lists }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <div>
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel>Add To Trip</InputLabel>
-            <Select
-              multiple
-              value={added}
-              onChange={handleChange}
-              input={<OutlinedInput label="Tag" />}
-              renderValue={() => {
-                return `Added to ${added.length} lists`;
-              }}
-              onBlur={() => {
-                updateEntries();
-              }}
-              MenuProps={MenuProps}
-            >
-              {lists.map((listItem) => (
-                <MenuItem key={listItem._id} value={listItem._id}>
-                  <Checkbox checked={added.indexOf(listItem._id) > -1} />
-                  <ListItemText primary={listItem.name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+        <FormControl className="add-to-trip" variant="outlined">
+          <InputLabel>Add To Trip</InputLabel>
+          <Select
+            multiple
+            value={added}
+            onChange={handleChange}
+            input={<OutlinedInput label="Tag" />}
+            renderValue={() => `Added to ${added.length} lists`}
+            onBlur={() => updateEntries()}
+            MenuProps={MenuProps}
+          >
+            {lists.map((listItem) => (
+              <MenuItem key={listItem._id} value={listItem._id}>
+                <Checkbox checked={added.indexOf(listItem._id) > -1} />
+                <ListItemText primary={listItem.name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </CardActions>
     </Card>
   );
