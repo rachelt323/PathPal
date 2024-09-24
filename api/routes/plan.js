@@ -1,5 +1,7 @@
 const express = require("express");
 const Plan = require("../models/Plan.js");
+const List = require("../models/List.js");
+const Place = require("../models/Place.js");
 
 const planRouter = express.Router();
 
@@ -49,6 +51,25 @@ planRouter.put("/:id", async (req, res) => {
     }
   );
   res.status(200).json({ message: "success" });
+});
+
+planRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const plan = await Plan.findById(id);
+    if (!plan) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+    await List.deleteMany({ planCode: id });
+
+    await Place.deleteMany({ plan: id });
+
+    await Plan.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Success" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = planRouter;
