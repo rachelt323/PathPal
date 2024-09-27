@@ -52,6 +52,22 @@ export default function MainPage() {
       setLoading(false);
     }
   };
+  const onDelete = async (plan_id, planIndex) => {
+    try {
+      await fetch(`http://localhost:3001/api/plan/${plan_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "applications/json",
+        },
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    const newPlans = userPlans.filter((item, idx) => idx !== planIndex);
+    setUserPlans(newPlans);
+  };
+
   const handleClick = () => {
     navigate("/plan/create");
   };
@@ -72,7 +88,7 @@ export default function MainPage() {
         >
           Plan new trip
         </Button>
-        <ImageCarousel userPlans={userPlans} />
+        <ImageCarousel userPlans={userPlans} onDelete={onDelete} />
       </Box>
     </>
   );

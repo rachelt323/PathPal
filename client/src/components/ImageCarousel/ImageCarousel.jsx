@@ -34,7 +34,7 @@ class ImageCarousel extends Component {
   state = { isMoving: false };
 
   render() {
-    const { userPlans, deviceType } = this.props;
+    const { userPlans, deviceType, onDelete } = this.props;
 
     return (
       <div style={useStyles.carouselContainer}>
@@ -48,11 +48,13 @@ class ImageCarousel extends Component {
           containerClass="carousel-container"
           itemClass="carousel-item"
         >
-          {userPlans.map((plan) => (
+          {userPlans.map((plan, index) => (
             <PlanCard
               userPlan={plan}
               key={plan._id}
               isMoving={this.state.isMoving}
+              planIndex={index}
+              onDelete={onDelete}
             />
           ))}
         </Carousel>
