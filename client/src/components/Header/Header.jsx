@@ -116,9 +116,11 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <Typography variant="body1" style={useStyles.greeting}>
-                Hi {userData.firstName}
-              </Typography>
+              {userData && (
+                <Typography variant="body1" style={useStyles.greeting}>
+                  Hi {userData.firstName}
+                </Typography>
+              )}
               <MenuItem onClick={handleProfile}>Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
