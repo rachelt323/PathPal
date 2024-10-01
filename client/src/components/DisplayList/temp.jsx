@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect } from "react";
 import { List, arrayMove } from "react-movable";
 import {
   FormControl,
@@ -25,14 +25,12 @@ export default function DisplayList({
   setAllPlaces,
   lists,
   setLists,
-  childClicked,
 }) {
   const [name, setName] = useState(listItem.name);
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [elRefs, setElRefs] = useState([]);
 
   const getPlaces = async () => {
     try {
@@ -111,57 +109,20 @@ export default function DisplayList({
     getPlaces();
   }, []);
 
-  useEffect(() => {
-    setElRefs((refs) =>
-      Array(places.length)
-        .fill()
-        .map((_, i) => refs[i] || createRef())
-    );
-  }, [places]);
-
-  useEffect(() => {
-    if (childClicked) {
-      const indices = childClicked.split("-");
-      const listIdx = parseInt(indices[0], 10);
-      const placeIdx = parseInt(indices[1], 10);
-
-      if (listIdx === listIndex && elRefs[placeIdx]) {
-        elRefs[placeIdx].current.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
-      }
-    }
-  }, [childClicked]);
-
   if (loading) {
     return <div>Loading..</div>;
   }
 
-  const calculateWidth = () => {
-    const baseWidth = 301; // Minimum width in pixels
-    const scalingFactor = 11; // Increase in width per character
-    return Math.max(baseWidth, name.length * scalingFactor);
-  };
-
   return (
     <Box className="box">
-      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-        <FormControl fullWidth className="formControl">
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <FormControl fullWidth className="formControl" variant="standard">
           <TextField
-            style={{ width: calculateWidth() }}
+            fullWidth
             value={name}
             onChange={(e) => setName(e.target.value)}
-            variant="standard"
             placeholder="Add a title (e.g., Restaurants)"
             className="textField"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => {
-              handleEdit();
-              setIsFocused(false);
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             InputProps={{
               disableUnderline: true,
               endAdornment: (
@@ -174,9 +135,16 @@ export default function DisplayList({
                 </InputAdornment>
               ),
             }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => {
+              handleEdit();
+              setIsFocused(false);
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           />
         </FormControl>
-        <IconButton onClick={handleDelete}>
+        <IconButton onClick={handleDelete} size="large">
           <DeleteIcon />
         </IconButton>
       </Box>
@@ -192,27 +160,25 @@ export default function DisplayList({
           rearrangePlaces(newPlaces);
         }}
         renderList={({ children, props }) => <Box {...props}>{children}</Box>}
-        renderItem={({ value, props, index }) => {
-          return (
-            <Card className="card" {...props} key={value.location_id}>
-              <Grid ref={elRefs[index]} container spacing={0}>
-                <Grid item xs={8}>
-                  <CardContent>
-                    <Typography variant="h6">{value.name}</Typography>
-                    <Typography variant="body2">{value.description}</Typography>
-                  </CardContent>
-                </Grid>
-                <Grid item xs={4}>
-                  <CardMedia
-                    className="media"
-                    image={value.photo?.images?.medium?.url || defaultImageUrl}
-                    title={value.name}
-                  />
-                </Grid>
+        renderItem={({ value, props }) => (
+          <Card className="card" {...props} key={value.location_id}>
+            <Grid container spacing={0}>
+              <Grid item xs={8}>
+                <CardContent>
+                  <Typography variant="h6">{value.name}</Typography>
+                  <Typography variant="body2">{value.description}</Typography>
+                </CardContent>
               </Grid>
-            </Card>
-          );
-        }}
+              <Grid item xs={4}>
+                <CardMedia
+                  className="media"
+                  image={value.photo?.images?.medium?.url || defaultImageUrl}
+                  title={value.name}
+                />
+              </Grid>
+            </Grid>
+          </Card>
+        )}
       />
     </Box>
   );

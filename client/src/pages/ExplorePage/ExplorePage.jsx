@@ -42,6 +42,7 @@ export default function ExplorePage() {
 
   useEffect(() => {
     if (coords) {
+      console.log(coords);
       getPlacesInfo(type, coords.lat, coords.lng).then((data) =>
         setPlaces(data)
       );

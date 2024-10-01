@@ -4,7 +4,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import CreatePage from "./pages/CreatePage";
 import Plan from "./pages/PlanPage/Plan.jsx";
-import ExplorePage from "./pages/ExplorePage";
+import ExplorePage from "./pages/ExplorePage/ExplorePage";
 import { AuthProvider } from "./util/AuthContext";
 
 function App() {

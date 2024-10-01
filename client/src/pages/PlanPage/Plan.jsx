@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPlanInfo } from "../../util/api";
 import DisplayList from "../../components/DisplayList/DisplayList";
@@ -17,16 +17,6 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 
 const useStyles = {
-  container: {
-    backgroundColor: "#F5EFE6",
-    padding: "20px",
-    borderRadius: "8px",
-    border: "1px solid #E8DFCA",
-    marginTop: "20px",
-  },
-  header: {
-    marginBottom: "20px",
-  },
   button: {
     backgroundColor: "#4F6F52",
     color: "#FFFFFF",
@@ -37,14 +27,15 @@ const useStyles = {
   },
   listContainer: {
     backgroundColor: "#E8DFCA",
-    padding: "20px",
     borderRadius: "8px",
+    overflowY: "scroll", // Enable scrolling
+    height: "calc(100vh - 64px)", // Adjust based on your layout needs
   },
 };
 
 export default function Plan() {
   const [planInfo, setPlanInfo] = useState(null);
-  const [selected, setSelected] = useState(null);
+  const [childClicked, setChildClicked] = useState(null);
   const [places, setPlaces] = useState([]);
   const [lists, setLists] = useState([]);
   const [title, setTitle] = useState("");
@@ -102,7 +93,9 @@ export default function Plan() {
         }),
       });
       const data = await response.json();
-      setLists((prev) => [...prev, data]);
+
+      // Ensure `prev` is an array before spreading
+      setLists((prev) => (Array.isArray(prev) ? [...prev, data] : [data]));
     } catch (error) {
       console.error(error);
     }
@@ -168,19 +161,19 @@ export default function Plan() {
   return (
     <>
       <Header />
-      <div style={useStyles.container}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            navigate(`/plan/${planCode}/explore`);
-          }}
-          style={useStyles.button}
-        >
-          Explore Places
-        </Button>
-        <Grid container spacing={3}>
+      <div className="container">
+        <Grid container>
           <Grid item xs={12} md={6}>
             <Box style={useStyles.listContainer}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  navigate(`/plan/${planCode}/explore`);
+                }}
+                style={useStyles.button}
+              >
+                Explore Places
+              </Button>
               <FormControl fullWidth className="titleFormControl">
                 <TextField
                   style={{ width: calculateWidth() }}
@@ -210,18 +203,20 @@ export default function Plan() {
                   }}
                 />
               </FormControl>
-
-              {lists?.map((listItem, listIndex) => (
-                <DisplayList
-                  listItem={listItem}
-                  key={listItem._id}
-                  listIndex={listIndex}
-                  allPlaces={places}
-                  setAllPlaces={setPlaces}
-                  lists={lists}
-                  setLists={setLists}
-                />
-              ))}
+              {lists &&
+                lists.length > 0 &&
+                lists.map((listItem, listIndex) => (
+                  <DisplayList
+                    listItem={listItem}
+                    key={listItem._id}
+                    listIndex={listIndex}
+                    allPlaces={places}
+                    setAllPlaces={setPlaces}
+                    lists={lists}
+                    setLists={setLists}
+                    childClicked={childClicked}
+                  />
+                ))}
 
               <Button
                 sx={{ mt: 2 }}
@@ -234,15 +229,11 @@ export default function Plan() {
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Box style={useStyles.listContainer}>
-              <Typography variant="h4" gutterBottom>
-                Map
-              </Typography>
-
+            <Box style={useStyles.mapContainer}>
               <PlanMap
                 places={places}
                 coords={{ lat: planInfo.lat, lng: planInfo.lng }}
-                setSelected={setSelected}
+                setChildClicked={setChildClicked}
               />
             </Box>
           </Grid>

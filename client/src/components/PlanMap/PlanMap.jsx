@@ -16,11 +16,15 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import "./PlanMap.css";
 
-const Marker = ({ place, text, hovered, color }) => (
+const Marker = ({ place, text, hovered, color, setCenter }) => (
   <div
     className={`custom-marker ${hovered ? "hovered" : ""}`}
     style={{
       backgroundColor: color,
+    }}
+    onClick={() => {
+      console.log("called");
+      setCenter({ lat: place.lat, lng: place.lng });
     }}
   >
     <div className="inner-circle">{text}</div>
@@ -30,9 +34,13 @@ const Marker = ({ place, text, hovered, color }) => (
   </div>
 );
 
-export default function PlanMap({ places, coords, setSelected }) {
+export default function PlanMap({ places, coords, setChildClicked }) {
   const [hover, setHover] = useState(null);
   const [listColors, setListColors] = useState([]);
+  const [center, setCenter] = useState({
+    lat: coords.lat,
+    lng: coords.lng,
+  });
 
   // Function to generate a random color
   const getRandomColor = () => {
@@ -65,15 +73,22 @@ export default function PlanMap({ places, coords, setSelected }) {
   };
 
   return (
-    <div style={{ height: "100vh", width: "100%", position: "relative" }}>
+    <div
+      style={{
+        height: "calc(100vh - 64px)",
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_MAPS_KEY }}
-        defaultCenter={defaultProps.center}
+        center={center}
         defaultZoom={defaultProps.zoom}
         onChildMouseEnter={(child) => onChildMouseEnter(child)}
         onChildMouseLeave={onChildMouseLeave}
         onChildClick={(child) => {
-          setSelected(child);
+          setChildClicked(child);
+          console.log(child);
         }}
       >
         {places.map((placeList, listIndex) =>
@@ -87,6 +102,7 @@ export default function PlanMap({ places, coords, setSelected }) {
               place={place}
               hovered={hover ? Number(hover) === placeIndex : 0}
               color={listColors[listIndex]}
+              setCenter={setCenter}
             />
           ))
         )}

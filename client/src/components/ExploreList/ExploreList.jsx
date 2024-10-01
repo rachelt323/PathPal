@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import "./ExploreList.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -7,8 +8,8 @@ import PlaceDetails from "../PlaceDetails/PlaceDetails";
 
 export default function ExploreList({ plan, type, setType, places, lists }) {
   return (
-    <div>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+    <div className="explore-list-container">
+      <FormControl className="explore-list-form" variant="standard">
         <InputLabel>Type</InputLabel>
         <Select value={type} onChange={(e) => setType(e.target.value)}>
           <MenuItem value={"restaurants"}>Restaurants</MenuItem>
@@ -16,12 +17,20 @@ export default function ExploreList({ plan, type, setType, places, lists }) {
           <MenuItem value={"hotels"}>Hotels</MenuItem>
         </Select>
       </FormControl>
-      {places?.map((place, i) => {
-        if (place["name"])
-          return (
-            <PlaceDetails plan={plan} place={place} lists={lists} key={i} />
-          );
-      })}
+      <div className="places-container">
+        {places?.map(
+          (place, i) =>
+            place["name"] && (
+              <PlaceDetails
+                plan={plan}
+                place={place}
+                lists={lists}
+                key={i}
+                className="place-card"
+              />
+            )
+        )}
+      </div>
     </div>
   );
 }

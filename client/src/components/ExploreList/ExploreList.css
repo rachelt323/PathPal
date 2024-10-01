@@ -1,0 +1,25 @@
+.explore-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.explore-list-form {
+  margin-bottom: 20px;
+}
+
+.places-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.place-card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.place-card:hover {
+  transform: scale(1.05);
+}
