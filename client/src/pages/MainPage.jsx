@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, Button } from "@mui/material";
+import { Grid, TextField, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header/Header";
 import ImageCarousel from "../components/ImageCarousel/ImageCarousel";
+import { usePlacesWidget } from "react-google-autocomplete";
 
 const useStyles = {
   button: {
@@ -35,7 +36,15 @@ const useStyles = {
 export default function MainPage() {
   const [userPlans, setUserPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [thePlace, setPlace] = useState(null); // To handle place selection
   const navigate = useNavigate();
+
+  const { ref: materialRef } = usePlacesWidget({
+    apiKey: process.env.REACT_APP_MAPS_KEY,
+    onPlaceSelected: (place) => setPlace(place),
+    inputAutocompleteValue: "country",
+  });
+
   const getUserInfo = async () => {
     try {
       const response = await fetch("http://localhost:3001/api/plan", {
@@ -52,6 +61,30 @@ export default function MainPage() {
       setLoading(false);
     }
   };
+
+  const handleCreate = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/plan/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: "Trip to " + thePlace.formatted_address,
+          place: thePlace.formatted_address,
+          lat: thePlace.geometry.location.lat(),
+          lng: thePlace.geometry.location.lng(),
+          lists: [],
+        }),
+      });
+      const data = await res.json();
+      navigate(`/plan/${data._id}`);
+    } catch (error) {
+      console.error("Error creating plan:", error);
+    }
+  };
+
   const onDelete = async (plan_id, planIndex) => {
     try {
       await fetch(`http://localhost:3001/api/plan/${plan_id}`, {
@@ -68,27 +101,41 @@ export default function MainPage() {
     setUserPlans(newPlans);
   };
 
-  const handleClick = () => {
-    navigate("/plan/create");
-  };
   useEffect(() => {
     getUserInfo();
   }, []);
+
   if (loading) {
     return <div style={useStyles.loading}>Loading...</div>;
   }
+
   return (
     <>
       <Header />
       <Box style={useStyles.box}>
-        <Button
-          onClick={handleClick}
-          variant="contained"
-          style={useStyles.button}
-        >
-          Plan new trip
-        </Button>
+        {/* Display Existing Trips */}
         <ImageCarousel userPlans={userPlans} onDelete={onDelete} />
+
+        {/* Plan a New Trip Section */}
+        <Box mt={4} textAlign="center">
+          <Box sx={{ fontWeight: "bold", typography: "h4", marginBottom: "20px" }}>
+            Plan a new trip
+          </Box>
+
+          <div style={{ width: "250px", marginBottom: "20px" }}>
+            <TextField
+              fullWidth
+              color="secondary"
+              variant="outlined"
+              inputRef={materialRef}
+              placeholder="Enter location"
+            />
+          </div>
+
+          <Button onClick={handleCreate} variant="contained" style={useStyles.button}>
+            Begin
+          </Button>
+        </Box>
       </Box>
     </>
   );
