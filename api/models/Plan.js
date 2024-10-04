@@ -20,6 +20,14 @@ const PlanSchema = new Schema(
     lng: {
       type: Number,
     },
+    fromDate: {
+      type: Date,
+      required: false,
+    },
+    toDate: {
+      type: Date,
+      required: false,
+    },
   },
   { timestamps: true }
 );
