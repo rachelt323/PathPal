@@ -7,7 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../util/AuthContext";
 
 const useStyles = {
@@ -34,11 +35,16 @@ const useStyles = {
     padding: "10px 20px",
     fontWeight: "bold",
   },
+  backButton: {
+    marginRight: "10px",
+    color: "#F5EFE6",
+  },
 };
 
 export default function Header() {
   const { isLoggedIn, userData, setLoggedIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLoginClick = () => {
@@ -77,9 +83,22 @@ export default function Header() {
     }
   };
 
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   return (
     <AppBar position="static" style={useStyles.appBar}>
       <Toolbar style={useStyles.toolbar}>
+        {location.pathname !== "/" && (
+          <IconButton
+            edge="start"
+            style={useStyles.backButton}
+            onClick={handleBackClick}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        )}
         <Typography
           variant="h6"
           style={useStyles.title}
