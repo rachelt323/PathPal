@@ -1,37 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Grid, TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header/Header";
 import ImageCarousel from "../components/ImageCarousel/ImageCarousel";
 import { usePlacesWidget } from "react-google-autocomplete";
-
-const useStyles = {
-  button: {
-    backgroundColor: "#4F6F52",
-    color: "#FFFFFF",
-    "&:hover": {
-      backgroundColor: "#1A4D2E",
-    },
-    marginBottom: "20px",
-  },
-  box: {
-    backgroundColor: "#F5EFE6",
-    padding: "20px",
-    borderRadius: "8px",
-    border: "1px solid #E8DFCA",
-  },
-  gridContainer: {
-    backgroundColor: "#F5EFE6",
-    padding: "20px",
-    borderRadius: "8px",
-    border: "1px solid #E8DFCA",
-  },
-  loading: {
-    color: "#1A4D2E",
-    fontSize: "20px",
-    textAlign: "center",
-  },
-};
+import './MainPage.css'; // Import the CSS file
+import './PathPal.mp4';
 
 export default function MainPage() {
   const [userPlans, setUserPlans] = useState([]);
@@ -106,37 +80,47 @@ export default function MainPage() {
   }, []);
 
   if (loading) {
-    return <div style={useStyles.loading}>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
     <>
+      <video className="background-video" autoPlay={true} muted loop>
+          <source src={require("./PathPal.mp4")} type="video/mp4"/>
+       </video>
+       
       <Header />
-      <Box style={useStyles.box}>
+      <Box className="box">
         {/* Display Existing Trips */}
         <ImageCarousel userPlans={userPlans} onDelete={onDelete} />
-
-        {/* Plan a New Trip Section */}
-        <Box mt={4} textAlign="center">
-          <Box sx={{ fontWeight: "bold", typography: "h4", marginBottom: "20px" }}>
-            Plan a new trip
-          </Box>
-
-          <div style={{ width: "250px", marginBottom: "20px" }}>
-            <TextField
-              fullWidth
-              color="secondary"
-              variant="outlined"
-              inputRef={materialRef}
-              placeholder="Enter location"
-            />
-          </div>
-
-          <Button onClick={handleCreate} variant="contained" style={useStyles.button}>
-            Begin
-          </Button>
-        </Box>
       </Box>
+
+      {/* Plan a New Trip Section */} 
+      <div className="shadow">
+      <Box className="newTripSection">
+        <Box className="tripHeader">
+        <br />Plan a new trip
+        </Box>
+
+        <div className="inputField">
+          <input text="text" placeholder="Enter location" />
+          {/*
+          <TextField
+            fullWidth
+            color="secondary"
+            variant="outlined"
+            inputRef={materialRef}
+            placeholder="Enter location"
+          />
+  \         */}
+
+        </div>
+
+        <Button onClick={handleCreate} variant="contained" className="beginButton">
+          Begin
+        </Button>
+      </Box>
+      </div>
     </>
   );
 }

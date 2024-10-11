@@ -18,10 +18,11 @@ const useCardStyles = {
     },
     cursor: "pointer",
     border: "1px solid #1A4D2E",
+    width: 300
   },
   media: {
-    height: 160,
-  },
+    height: 100,
+    },
   title: {
     color: "#1A4D2E",
     whiteSpace: "nowrap",

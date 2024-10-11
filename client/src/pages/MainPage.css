@@ -1,0 +1,64 @@
+.background-video{
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: -2;
+    opacity: 80%;
+    margin-top: 100px;
+}
+
+.box {
+    background-color: #F5EFE6;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #E8DFCA;
+  }
+  
+  .loading {
+    color: #1A4D2E;
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .newTripSection {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .shadow{
+    background-color: rgba(0, 0, 0, 0.478);
+    height: 100vh;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+  }
+  
+  .tripHeader {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    font-size: 6rem;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  .inputField {
+    width: 700px;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    margin: 0 auto 20px auto; /* Center the input field */
+  }
+  
+  .beginButton {
+    background-color: #4F6F52;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+  }
+  
+  .beginButton:hover {
+    background-color: #1A4D2E;
+  }
+  
