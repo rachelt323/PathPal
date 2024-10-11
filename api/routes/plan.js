@@ -7,12 +7,16 @@ const planRouter = express.Router();
 
 planRouter.post("/create", async (req, res) => {
   try {
+    const { title, place, lat, lng, fromDate, toDate } = req.body;
+
     var newPlan = new Plan({
       owner: req.user.id,
-      title: req.body.title,
-      place: req.body.place,
-      lat: req.body.lat,
-      lng: req.body.lng,
+      title: title,
+      place: place,
+      lat: lat,
+      lng: lng,
+      fromDate: fromDate || null,
+      toDate: toDate || null,
       lists: [],
     });
     await newPlan.save();
