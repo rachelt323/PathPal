@@ -103,7 +103,7 @@ export default function MainPage() {
         </Box>
 
         <div className="inputField">
-          <input text="text" placeholder="Enter location" />
+          <input className="text" placeholder="Enter location" />
           {/*
           <TextField
             fullWidth
