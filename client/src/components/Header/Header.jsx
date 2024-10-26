@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../util/AuthContext";
+import { FaUserCircle, FaArrowLeft } from "react-icons/fa";
 import './Header.css';
+import ProfileModal from './ProfileModal';
 
 export default function Header() {
   const { isLoggedIn, userData, setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false); 
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -22,7 +25,7 @@ export default function Header() {
   };
 
   const handleProfile = () => {
-    navigate("/profile");
+    setProfileModalOpen(true); 
     handleCloseMenu();
   };
 
@@ -53,21 +56,16 @@ export default function Header() {
     <div className="header-appbar">
       <div className="header-toolbar">
         {location.pathname !== "/" && (
-          <span className="header-back-button" onClick={handleBackClick}>
-            ⬅
-          </span>
+          <FaArrowLeft className="header-back-button" onClick={handleBackClick} />
         )}
         <div className="header-title" onClick={() => navigate("/")}>
           PathPal
         </div>
         {isLoggedIn ? (
           <div className="header-menu">
-            <span onClick={toggleMenu} style={{ cursor: "pointer" }}>👤</span>
+            <FaUserCircle className={`header-profile-icon ${isLoggedIn ? "header-profile-icon-large" : ""}`} onClick={handleProfile} />
             {menuOpen && (
               <div className="header-menu-items">
-                {userData && (
-                  <div className="header-greeting">Hi {userData.firstName}</div>
-                )}
                 <button onClick={handleProfile}>Profile</button>
                 <button onClick={handleLogout}>Logout</button>
               </div>
@@ -79,6 +77,14 @@ export default function Header() {
           </button>
         )}
       </div>
+
+      {}
+      {isProfileModalOpen && (
+        <ProfileModal 
+          userData={userData} 
+          onClose={() => setProfileModalOpen(false)} 
+        />
+      )}
     </div>
   );
 }
