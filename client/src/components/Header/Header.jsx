@@ -10,7 +10,7 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isProfileModalOpen, setProfileModalOpen] = useState(false); 
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   const handleProfile = () => {
-    setProfileModalOpen(true); 
+    setProfileModalOpen(true);
     handleCloseMenu();
   };
 
@@ -63,7 +63,7 @@ export default function Header() {
         </div>
         {isLoggedIn ? (
           <div className="header-menu">
-            <FaUserCircle className={`header-profile-icon ${isLoggedIn ? "header-profile-icon-large" : ""}`} onClick={handleProfile} />
+            <FaUserCircle className={`header-profile-icon ${isLoggedIn ? "header-profile-icon-large" : ""}`} onClick={toggleMenu} />
             {menuOpen && (
               <div className="header-menu-items">
                 <button onClick={handleProfile}>Profile</button>
@@ -78,7 +78,6 @@ export default function Header() {
         )}
       </div>
 
-      {}
       {isProfileModalOpen && (
         <ProfileModal 
           userData={userData} 
