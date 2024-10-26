@@ -1,67 +1,29 @@
 import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../util/AuthContext";
-
-const useStyles = {
-  appBar: {
-    backgroundColor: "#4F6F52",
-  },
-  toolbar: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  title: {
-    color: "#F5EFE6",
-    fontWeight: "bold",
-  },
-  button: {
-    backgroundColor: "#E8DFCA",
-    color: "#1A4D2E",
-    "&:hover": {
-      backgroundColor: "#4F6F52",
-      color: "#F5EFE6",
-    },
-  },
-  greeting: {
-    padding: "10px 20px",
-    fontWeight: "bold",
-  },
-  backButton: {
-    marginRight: "10px",
-    color: "#F5EFE6",
-  },
-};
+import './Header.css';
 
 export default function Header() {
   const { isLoggedIn, userData, setLoggedIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLoginClick = () => {
     navigate("/login");
   };
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseMenu = () => {
+    setMenuOpen(false);
   };
 
   const handleProfile = () => {
     navigate("/profile");
-    handleClose();
+    handleCloseMenu();
   };
 
   const handleLogout = async () => {
@@ -79,7 +41,7 @@ export default function Header() {
     } catch (error) {
       console.error("An error occurred during logout", error);
     } finally {
-      handleClose();
+      handleCloseMenu();
     }
   };
 
@@ -88,72 +50,35 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="static" style={useStyles.appBar}>
-      <Toolbar style={useStyles.toolbar}>
+    <div className="header-appbar">
+      <div className="header-toolbar">
         {location.pathname !== "/" && (
-          <IconButton
-            edge="start"
-            style={useStyles.backButton}
-            onClick={handleBackClick}
-          >
-            <ArrowBackIcon />
-          </IconButton>
+          <span className="header-back-button" onClick={handleBackClick}>
+            ⬅
+          </span>
         )}
-        <Typography
-          variant="h6"
-          style={useStyles.title}
-          onClick={() => {
-            navigate("/");
-          }}
-        >
+        <div className="header-title" onClick={() => navigate("/")}>
           PathPal
-        </Typography>
+        </div>
         {isLoggedIn ? (
-          <div>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              {userData && (
-                <Typography variant="body1" style={useStyles.greeting}>
-                  Hi {userData.firstName}
-                </Typography>
-              )}
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
+          <div className="header-menu">
+            <span onClick={toggleMenu} style={{ cursor: "pointer" }}>👤</span>
+            {menuOpen && (
+              <div className="header-menu-items">
+                {userData && (
+                  <div className="header-greeting">Hi {userData.firstName}</div>
+                )}
+                <button onClick={handleProfile}>Profile</button>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
           </div>
         ) : (
-          <Button
-            variant="contained"
-            style={useStyles.button}
-            onClick={handleLoginClick}
-          >
+          <button className="header-button" onClick={handleLoginClick}>
             Login
-          </Button>
+          </button>
         )}
-      </Toolbar>
-    </AppBar>
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,67 @@
+.header-appbar {
+    background-color: #4F6F52;
+    padding: 10px;
+  }
+  
+  .header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-title {
+    color: #F5EFE6;
+    font-weight: bold;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .header-button {
+    background-color: #E8DFCA;
+    color: #1A4D2E;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .header-button:hover {
+    background-color: #4F6F52;
+    color: #F5EFE6;
+  }
+  
+  .header-greeting {
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
+  .header-back-button {
+    margin-right: 10px;
+    color: #F5EFE6;
+    cursor: pointer;
+  }
+  
+  .header-menu {
+    position: relative;
+  }
+  
+  .header-menu-items {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .header-menu-items button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+    padding: 5px;
+  }
