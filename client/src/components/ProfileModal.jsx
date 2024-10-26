@@ -8,6 +8,7 @@ function App() {
         <div className='pmodal-content'>
             <span className="close">&times</span>
             <p> Profile stuff inside the Modal</p>
+            
         </div>
       </div>
       </div>
