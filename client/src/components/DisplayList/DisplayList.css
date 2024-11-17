@@ -1,0 +1,69 @@
+.DisplayList-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.DisplayList-loading {
+  font-size: 16px;
+  text-align: center;
+}
+
+.DisplayList-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.DisplayList-titleInput {
+  font-size: 16px;
+  padding: 8px;
+  flex-grow: 1;
+}
+
+.DisplayList-deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 8px;
+}
+
+.DisplayList-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.DisplayList-card {
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.DisplayList-card-expanded {
+  background-color: #eef;
+}
+
+.DisplayList-cardContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.DisplayList-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.DisplayList-description-expanded {
+  white-space: normal;
+}
+
+.DisplayList-expandButton {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  align-self: flex-end;
+}

@@ -1,21 +1,6 @@
 import React, { useState, useEffect, createRef } from "react";
 import { List, arrayMove } from "react-movable";
-import {
-  FormControl,
-  TextField,
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  Grid,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import "./styles.css";
+import "./DisplayList.css";
 
 const defaultImageUrl = "/static/images/temp-background.jpeg";
 
@@ -34,7 +19,6 @@ export default function DisplayList({
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [elRefs, setElRefs] = useState([]);
-
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleExpand = (index) => {
@@ -46,9 +30,7 @@ export default function DisplayList({
       const response = await fetch(
         `http://localhost:3001/api/list/${listItem._id}/places`,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
       );
@@ -65,9 +47,7 @@ export default function DisplayList({
     try {
       await fetch(`http://localhost:3001/api/list/${listItem._id}/rearrange`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
           newOrder: newPlaces,
@@ -82,9 +62,7 @@ export default function DisplayList({
     try {
       await fetch(`http://localhost:3001/api/list/${listItem._id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
           name,
@@ -99,15 +77,13 @@ export default function DisplayList({
     try {
       await fetch(`http://localhost:3001/api/list/${listItem._id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
 
-      const newPlaces = allPlaces.filter((item, idx) => idx !== listIndex);
+      const newPlaces = allPlaces.filter((_, idx) => idx !== listIndex);
       setAllPlaces(newPlaces);
-      const newLists = lists.filter((item, idx) => idx !== listIndex);
+      const newLists = lists.filter((_, idx) => idx !== listIndex);
       setLists(newLists);
     } catch (error) {
       console.error(error);
@@ -119,18 +95,14 @@ export default function DisplayList({
       await Promise.all([
         fetch(`http://localhost:3001/api/place/${listItem._id}/${location}`, {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
         }),
         fetch(
           `http://localhost:3001/api/list/${listItem._id}/${location}/deletePlace`,
           {
             method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             credentials: "include",
           }
         ),
@@ -184,7 +156,7 @@ export default function DisplayList({
   }, [childClicked]);
 
   if (loading) {
-    return <div>Loading..</div>;
+    return <div className="DisplayList-loading">Loading...</div>;
   }
 
   const calculateWidth = () => {
@@ -194,116 +166,62 @@ export default function DisplayList({
   };
 
   return (
-    <Box className="box">
-      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-        <FormControl fullWidth className="formControl">
-          <TextField
-            style={{ width: calculateWidth() }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            variant="standard"
-            placeholder="Add a title (e.g., Restaurants)"
-            className="textField"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => {
-              handleEdit();
-              setIsFocused(false);
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            InputProps={{
-              disableUnderline: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <EditIcon
-                    style={{
-                      visibility: isHovered || isFocused ? "visible" : "hidden",
-                    }}
-                  />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </FormControl>
-        <IconButton onClick={handleDelete}>
-          <DeleteIcon />
-        </IconButton>
-      </Box>
+    <div className="DisplayList-container">
+      <div className="DisplayList-header">
+        <input
+          className="DisplayList-titleInput"
+          style={{ width: `${calculateWidth()}px` }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={handleEdit}
+          placeholder="Add a title (e.g., Restaurants)"
+        />
+        <button className="DisplayList-deleteButton" onClick={handleDelete}>
+          &#x1F5D1;
+        </button>
+      </div>
 
       <List
         values={places}
         onChange={({ oldIndex, newIndex }) => {
           const newPlaces = arrayMove(places, oldIndex, newIndex);
-          const newList = [...allPlaces];
-          newList[listIndex] = newPlaces;
-          setAllPlaces(newList);
           setPlaces(newPlaces);
           rearrangePlaces(newPlaces);
         }}
-        renderList={({ children, props }) => <Box {...props}>{children}</Box>}
+        renderList={({ children, props }) => (
+          <div className="DisplayList-list" {...props}>
+            {children}
+          </div>
+        )}
         renderItem={({ value, props, index }) => {
           const isExpanded = expandedIndex === index;
           return (
-            <Card
-              className={`card ${isExpanded ? "expanded" : ""}`}
+            <div
+              className={`DisplayList-card ${
+                isExpanded ? "DisplayList-card-expanded" : ""
+              }`}
               {...props}
-              key={value.location_id}
             >
-              <Grid ref={elRefs[index]} container spacing={0}>
-                <Grid item xs={8}>
-                  <CardContent className="cardContent">
-                    <Typography variant="h6">{value.name}</Typography>
-                    <Typography
-                      variant="body2"
-                      className={`description ${isExpanded ? "expanded" : ""}`}
-                    >
-                      {value.description || "No description available"}
-                    </Typography>
-                    {value.description?.length > 100 && (
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        className="expandContainer"
-                      >
-                        <IconButton
-                          onClick={() => toggleExpand(index)}
-                          className={`expandIconButton ${
-                            isExpanded ? "expanded" : ""
-                          }`}
-                        >
-                          <ExpandMoreIcon
-                            className={`expandIcon ${
-                              isExpanded ? "expanded" : ""
-                            }`}
-                          />
-                        </IconButton>
-                      </Box>
-                    )}
-                  </CardContent>
-                </Grid>
-                <Grid item xs={4} className="mediaWrapper">
-                  <CardMedia
-                    className="media"
-                    image={value.photo?.images?.medium?.url || defaultImageUrl}
-                    title={value.name}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <div className="deleteIconWrapper">
-                    <IconButton
-                      onClick={() =>
-                        handlePlaceDelete(value.location_id, index)
-                      }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
-                </Grid>
-              </Grid>
-            </Card>
+              <div className="DisplayList-cardContent">
+                <h3>{value.name}</h3>
+                <p
+                  className={`DisplayList-description ${
+                    isExpanded ? "DisplayList-description-expanded" : ""
+                  }`}
+                >
+                  {value.description || "No description available"}
+                </p>
+                <button
+                  className="DisplayList-expandButton"
+                  onClick={() => toggleExpand(index)}
+                >
+                  {isExpanded ? "Collapse" : "Expand"}
+                </button>
+              </div>
+            </div>
           );
         }}
       />
-    </Box>
+    </div>
   );
 }
