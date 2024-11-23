@@ -1,0 +1,55 @@
+/* Main map container */
+.Map-container {
+    height: 85vh;
+    width: 100%;
+  }
+  
+  /* Marker styling */
+  .Map-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  
+  .Map-marker:hover {
+    z-index: 2;
+  }
+  
+  /* Info card for places */
+  .Map-paperContainer {
+    background: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 120px;
+    text-align: center;
+  }
+  
+  /* Typography for place names */
+  .Map-typography {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  /* Image for places */
+  .Map-image {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  
+  /* Rating display */
+  .Map-rating {
+    font-size: 12px;
+    color: #666;
+  }
+  

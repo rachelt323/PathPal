@@ -1,12 +1,67 @@
-import React, { useEffect } from "react";
+import React from "react";
 import GoogleMapReact from "google-map-react";
-import { Paper, Typography, Rating } from "@mui/material";
-import mapStyles from "./MapStyles";
-import "./styles.css";
+import "./Map.css";
 
 export default function Map({ coords, places }) {
+  const mapStyles = [
+    {
+      featureType: "all",
+      elementType: "labels.text",
+      stylers: [
+        {
+          color: "#878787",
+        },
+      ],
+    },
+    {
+      featureType: "all",
+      elementType: "labels.text.stroke",
+      stylers: [
+        {
+          visibility: "off",
+        },
+      ],
+    },
+    {
+      featureType: "landscape",
+      elementType: "all",
+      stylers: [
+        {
+          color: "#f9f5ed",
+        },
+      ],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "all",
+      stylers: [
+        {
+          color: "#f5f5f5",
+        },
+      ],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry.stroke",
+      stylers: [
+        {
+          color: "#c9c9c9",
+        },
+      ],
+    },
+    {
+      featureType: "water",
+      elementType: "all",
+      stylers: [
+        {
+          color: "#aee0f4",
+        },
+      ],
+    },
+  ];
+
   return (
-    <div className="mapContainer">
+    <div className="Map-container">
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_MAPS_KEY }}
         defaultCenter={coords}
@@ -27,27 +82,23 @@ export default function Map({ coords, places }) {
                   key={index}
                   lat={item.latitude}
                   lng={item.longitude}
-                  className="marker"
+                  className="Map-marker"
                 >
-                  <Paper elevation={3} className="paperContainer">
-                    <Typography variant="subtitle2" gutterBottom>
-                      {item.name}
-                    </Typography>
+                  <div className="Map-paperContainer">
+                    <div className="Map-typography">{item.name}</div>
                     <img
                       src={
                         item.photo
                           ? item.photo.images.large.url
                           : "https://www.foodserviceandhospitality.com/wp-content/uploads/2016/09/Restaurant-Placeholder-001.jpg"
                       }
-                      style={{ cursor: "pointer" }}
+                      alt={item.name}
+                      className="Map-image"
                     />
-                    <Rating
-                      name="read-only"
-                      size="small"
-                      value={Number(item.rating)}
-                      readOnly
-                    />
-                  </Paper>
+                    <div className="Map-rating">{`Rating: ${
+                      item.rating || "N/A"
+                    }`}</div>
+                  </div>
                 </div>
               );
             }
