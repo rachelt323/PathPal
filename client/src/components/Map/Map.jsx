@@ -65,44 +65,42 @@ export default function Map({ coords, places }) {
       <GoogleMapReact
         bootstrapURLKeys={{ key: process.env.REACT_APP_MAPS_KEY }}
         defaultCenter={coords}
-        margin={[50, 50, 50, 50]}
+        defaultZoom={14}
         options={{
           disableDefaultUI: true,
           zoomControl: true,
           styles: mapStyles,
         }}
-        defaultZoom={14}
         onChildClick={(child) => console.log(child)}
       >
-        {places.length &&
-          places.map((item, index) => {
-            if (item["name"]) {
-              return (
-                <div
-                  key={index}
-                  lat={item.latitude}
-                  lng={item.longitude}
-                  className="Map-marker"
-                >
-                  <div className="Map-paperContainer">
-                    <div className="Map-typography">{item.name}</div>
-                    <img
-                      src={
-                        item.photo
-                          ? item.photo.images.large.url
-                          : "https://www.foodserviceandhospitality.com/wp-content/uploads/2016/09/Restaurant-Placeholder-001.jpg"
-                      }
-                      alt={item.name}
-                      className="Map-image"
-                    />
-                    <div className="Map-rating">{`Rating: ${
-                      item.rating || "N/A"
-                    }`}</div>
-                  </div>
+        {places?.map((item, index) =>
+          item.name ? (
+            <div
+              key={index}
+              lat={item.latitude}
+              lng={item.longitude}
+              className="Map-marker"
+            >
+              <div className="Map-infoCard">
+                <img
+                  src={
+                    item.photo
+                      ? item.photo.images.large.url
+                      : "https://www.foodserviceandhospitality.com/wp-content/uploads/2016/09/Restaurant-Placeholder-001.jpg"
+                  }
+                  alt={item.name}
+                  className="Map-infoImage"
+                />
+                <div className="Map-infoDetails">
+                  <span className="Map-infoTitle">{item.name}</span>
+                  <span className="Map-infoRating">
+                    {`Rating: ${item.rating || "N/A"}`}
+                  </span>
                 </div>
-              );
-            }
-          })}
+              </div>
+            </div>
+          ) : null
+        )}
       </GoogleMapReact>
     </div>
   );

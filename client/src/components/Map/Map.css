@@ -1,7 +1,10 @@
-/* Main map container */
+/* Map container with subtle border-radius and shadow */
 .Map-container {
     height: 85vh;
     width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   /* Marker styling */
@@ -9,47 +12,53 @@
     position: absolute;
     transform: translate(-50%, -50%);
     z-index: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
   }
   
   .Map-marker:hover {
+    transform: scale(1.2);
     z-index: 2;
   }
   
-  /* Info card for places */
-  .Map-paperContainer {
-    background: white;
+  /* Info card styling */
+  .Map-infoCard {
+    background: rgba(255, 255, 255, 0.9);
     padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 120px;
+    width: 150px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     text-align: center;
   }
   
-  /* Typography for place names */
-  .Map-typography {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 8px;
-  }
-  
-  /* Image for places */
-  .Map-image {
-    width: 100px;
+  .Map-infoImage {
+    width: 100%;
     height: 80px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 6px;
     margin-bottom: 8px;
-    cursor: pointer;
   }
   
-  /* Rating display */
-  .Map-rating {
+  .Map-infoDetails {
+    font-size: 12px;
+    color: #333;
+  }
+  
+  .Map-infoTitle {
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .Map-infoRating {
     font-size: 12px;
     color: #666;
   }
   
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .Map-infoCard {
+      width: 120px;
+    }
+  }
